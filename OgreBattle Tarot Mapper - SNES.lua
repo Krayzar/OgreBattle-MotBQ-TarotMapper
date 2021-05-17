@@ -1,7 +1,7 @@
 -- SCRIPT CONFIG START --
 
   -- Skip Quest logo
-  skiplogo = false
+  skiplogo = true
 
   -- Test options include Male, Female, or Both
   setsex = 'Male'
@@ -13,7 +13,7 @@
   -- Run for the specified number of Timer 2 (t2) cycles
   -- Each t2 cycle contains 256 t1 frames to test
   -- Ignored if runfor_t1cycle = true
-  runfor_t2cycles = 1
+  runfor_t2cycles = 512
 
   -- delay starting until a specific real time frame
   delaytilframe = false
@@ -42,7 +42,7 @@
   -- Dispaly current Cards - performance hit, turn off if it's running slow
   displaycurrentcard = false
   -- Display Name - performance hit, turn off if it's running slow
-  displayname = true
+  displayname = false
   -- Display t1 and t2 timers
   displaytimers = false
   -- Display framecount - generated from script
@@ -631,42 +631,10 @@ while mainloop == true do
   elseif runfor_t1cycle ~= false then
     t1loop = runfor_t1cycle
   elseif runfor_t1cycle == false then
-    t1loop = 256 * runfor_t2cycles
+    t1loop = 256
   end
 
-  -- Configure loop to test for one or both sexes - hotttt
-  if setsex == 'Both' or setsex == nil then
-    sexloop = 2
-  else
-    sexloop = 1
-  end
-
-  -- Configure loop to test for logo
-  if skiplogo == 'Both' or skiplogo == nil then
-    logoloop = 2
-  else
-    logoloop = 1
-  end
-
-  stats()
-
-  -- loop switch for logo skip
-  for i=1, logoloop, 1 do
-  stats()
-  logoswitch = 1
-  currentlogo = 'unset'
-  if logoswitch == 1 and skiplogo == 'Both' then currentlogo = false end
-  if logoswitch == 2 and skiplogo == 'Both' then currentlogo = true end
-  if skiplogo ~= 'Both' then currentlogo = skiplogo end
-
-  -- loop switch for sex
-  for i=1, sexloop, 1 do
-  stats()
-  sexswitch = 1
-  currentsex = 'unset'
-  if sexswitch == 1 and setsex == 'Both' then currentsex = 'Male' end
-  if sexswitch == 2 and setsex == 'Both' then currentsex = 'Female' end
-  if setsex ~= 'Both' then currentsex = setsex end
+  currentlogo = skiplogo --fix me
 
   -- loop for t1 count
   for i=1, t1loop, 1 do
@@ -685,28 +653,27 @@ while mainloop == true do
       pressalt(A, 50, 1)
       nopress(19)
       sex(currentsex)
-      if runfor_t1cycle == true and delaytilframe == false and delaytilt1frame == false and delaytilt2frame == false then
+      if delaytilframe == false and delaytilt1frame == false and delaytilt2frame == false then
         t1start = 255 - t1 + t1cyclecounter
         if t1start ~= 0 then nopress(t1start) end
-        stats()
         if t1cyclecounter == 0 then
           framestartforcycle = emu.framecount()
         else
           framestartforcycle = round(emu.framecount() / t1cyclecounter)
         end
         realt1atstart = t1
+        realt2atstart = t2
         pressalt(A, 1252, 1)
         saveinitialcardset()
         pressalt(A, 325, 1)
         findiC7()
-        logskiplogo = '?'
+        logskiplogo = '_'
         -- Deal with the fact that lua can't print booleans
         if currentlogo == true then logskiplogo = 'skip' end
         if currentlogo == false then logskiplogo = 'wait' end
         logtext = realt1atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. currentsex .. ',' .. logskiplogo
         writetolog(logtext, leadername)
         t1cyclecounter = t1cyclecounter + 1
-        t2cyclecounter = rounddown(t1cyclecounter / 256)
         nopress(delayaftert1loop)
         resetconsole(1)
       end
@@ -716,43 +683,39 @@ while mainloop == true do
       pressalt(A, 50, 1)
       nopress(19)
       sex(currentsex)
-      if runfor_t1cycle == true and delaytilframe == false and delaytilt1frame == false and delaytilt2frame == false then
+      if delaytilframe == false and delaytilt1frame == false and delaytilt2frame == false then
         t1start = 255 - t1 + t1cyclecounter
         if t1start ~= 0 then nopress(t1start) end
-        stats()
         if t1cyclecounter == 0 then
           framestartforcycle = emu.framecount()
         else
           framestartforcycle = round(emu.framecount() / t1cyclecounter)
         end
         realt1atstart = t1
+        realt2atstart = t2
         pressalt(A, 1252, 1)
         saveinitialcardset()
         pressalt(A, 325, 1)
         findiC7()
-        logskiplogo = '?'
+        logskiplogo = '_'
         -- Deal with the fact that lua can't print booleans
         if currentlogo == true then logskiplogo = 'skip' end
         if currentlogo == false then logskiplogo = 'wait' end
-        logtext = realt1atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. currentsex .. ',' .. logskiplogo
+        logtext = realt1atstart .. ',' .. realt2atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. currentsex .. ',' .. logskiplogo
         writetolog(logtext, leadername)
         t1cyclecounter = t1cyclecounter + 1
-        t2cyclecounter = rounddown(t1cyclecounter / 256)
         nopress(delayaftert1loop)
         resetconsole(1)
       end
     end
   end
-  sexswitch = sexswitch + 1
-  end
-  logoswitch = logoswitch + 1
-  end
   emu.frameadvance()
+  end
+  t2cyclecounter = t2cyclecounter + 1
   if runfor_t1cycle == true and t1cyclecounter == 256 then
     mainloop = false
-  elseif runfor_t1cycle == false and t1cyclecounter == runfor_t1cycle then
-    mainloop = false
+  elseif runfor_t1cycle == false and runfor_t2cycles ~= false and t1cyclecounter == runfor_t1cycle then
+    t1cyclecounter = 0
   elseif runfor_t2cycles ~= false and t2cyclecounter == runfor_t2cycles then
     mainloop = false
-  end
 end
