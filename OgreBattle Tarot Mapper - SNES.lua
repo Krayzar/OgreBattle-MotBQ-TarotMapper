@@ -19,7 +19,7 @@
   -- Run for the specified number of Timer 2 (t2) cycles
   -- Each t2 cycle contains 256 t1 frames to test
   -- Ignored if runfor_t1cycle = true
-  runfor_t2cycles = 512
+  runfor_t2cycles = 256
   -- delay starting until a specific real time frame cannot use other delays if this is set
   delaytilframe = false
   -- delay starting until a specific t1 frame
@@ -706,8 +706,9 @@ while mainloop == true do
       -- Deal with the fact that lua can't print booleans
       if skiplogo == true then logskiplogo = 'skip' end
       if skiplogo == false then logskiplogo = 'wait' end
+      frametimeforcycle = framestartforcycle / 60
       -- Build the text for our log
-      logtext = realt1atstart .. ',' .. realt2atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. setsex .. ',' .. logskiplogo
+      logtext = realt1atstart .. ',' .. realt2atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. setsex .. ',' .. logskiplogo .. ',' .. frametimeforcycle
       writetolog(logtext, leadername)
       -- Update counters
       t1cyclecounter = t1cyclecounter + 1
@@ -768,8 +769,9 @@ while mainloop == true do
       -- Deal with the fact that lua can't print booleans
       if skiplogo == true then logskiplogo = 'skip' end
       if skiplogo == false then logskiplogo = 'wait' end
+      frametimeforcycle = framestartforcycle / 60
       -- Build the text for our log
-      logtext = realt1atstart .. ',' .. realt2atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. setsex .. ',' .. logskiplogo
+      logtext = realt1atstart .. ',' .. realt2atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. setsex .. ',' .. logskiplogo .. ',' .. frametimeforcycle
       writetolog(logtext, leadername)
       -- Update counters
       t1cyclecounter = t1cyclecounter + 1
