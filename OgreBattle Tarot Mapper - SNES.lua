@@ -23,9 +23,9 @@
   -- delay starting until a specific real time frame cannot use other delays if this is set
   delaytilframe = false
   -- delay starting until a specific t1 frame
-  delaytilt1frame = 254
+  delaytilt1frame = false
   -- delay starting until a specific t2 frame
-  delaytilt2frame = 5
+  delaytilt2frame = false
   -- delay after completing each t1 loop for a set amount of frames - easier to record leader stats on video
   delayaftert1loop = 300
   -- Display initial Cards
@@ -42,15 +42,27 @@
 -- SCRIPT CONFIG END --
 
 -- Setting up and figuring out some variables
+
   -- Main Timer count
   t1 = memory.readbyte(0x51)
   -- Secondary timer count
   t2 = memory.readbyte(0x52)
   -- Cycle counters for main count loops
-  if delaytilt1frame >= 0 then
+  t1cyclecounter = 0
+  totalt1cycles = 0
+  t2cyclecounter = 0
+  t2startoffset = 0
+
+  -- Deal with folks probably setting these to booleans
+  if delaytilt1frame == false or delaytilt1frame == nil then delaytilt1frame = 0 end
+  if delaytilt2frame == false or delaytilt2frame == nil then delaytilt2frame = 0 end
+  if delaytilframe == false or delaytilt1frame == nil then delaytilframe = 0 end
+
+  -- Set up our counters
+  if delaytilt1frame >= 1 then
     t1cyclecounter = delaytilt1frame
     totalt1cycles = delaytilt1frame
-  elseif delaytilt1frame == false then
+  elseif delaytilt1frame == 0 then
     t1cyclecounter = 0
     totalt1cycles = 0
   else
@@ -58,13 +70,16 @@
   end
   if delaytilt2frame >= 1 then
     t2startoffset = delaytilt2frame
-    t2cyclecounter = t2startoffset
-  elseif delaytilt2frame == false then
+    totalt1cycles = 256 * t2startoffset
+    totalt1cycles = totalt1cycles + delaytilt1frame
+    t2cyclecounter = math.floor(totalt1cycles / 256)
+  elseif delaytilt2frame == 0 then
     t2startoffset = 0
   else
     t2startoffset = 0
   end
 
+  -- Set our first run switch
   delaytilframefirstrun = true
 
   -- determine what t1 display says
@@ -633,6 +648,7 @@
 -- Main loop
 mainloop = true
 while mainloop == true do
+    startframecount = emu.framecount()
     setinitialcardvalues()
     stats()
     -- Skip logo
@@ -649,28 +665,28 @@ while mainloop == true do
       nopress(19)
       sex(setsex)
       -- Calculate what our starting frame should be based on settings
-      if delaytilt1frame == false and delaytilframe == false and delaytilt2frame == false then
-        t1start = 256 - t1 + t1cyclecounter
-      elseif delaytilt1frame >= 0 and delaytilframe == false and delaytilt2frame == false then
-        t1start = 256 - t1 + t1cyclecounter
-      elseif delaytilt1frame == false and delaytilframe == false and delaytilt2frame >= 1 then
-        delaytilt2frames = 256 * delaytilt2frame
-        delaytilt2frames = delaytilt2frames - 768
-        t1start = 256 - t1 + delaytilt2frames + t1cyclecounter
-      elseif delaytilt2frame >= 1 and delaytilframe == false and delaytilt1frame >= 0 then
-        delaytilt2frames = 256 * delaytilt2frame
-        delaytilt2frames = delaytilt2frames - 768
-        t1start = 256 - t1 + delaytilt2frames + t1cyclecounter
-      elseif delaytilt1frame == false and delaytilframe >= 0 and delaytilt2frame == false then
+      if delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame == 0 then
+        t1start = 256 - t1 + totalt1cycles
+      elseif delaytilt1frame >= 1 and delaytilframe == 0 and delaytilt2frame == 0 then
+        t1start = 256 - t1 + totalt1cycles
+      elseif delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame >= 1 then
+        --delaytilt2frames = 256 * delaytilt2frame
+        delaytilt2frames = 0
+        t1start = 256 - t1 + delaytilt2frames + totalt1cycles
+      elseif delaytilt2frame >= 1 and delaytilframe == 0 and delaytilt1frame >= 1 then
+        --delaytilt2frames = 256 * delaytilt2frame
+        delaytilt2frames = 0
+        t1start = 256 - t1 + delaytilt2frames + totalt1cycles
+      elseif delaytilt1frame == 0 and delaytilframe >= 1 and delaytilt2frame == 0 then
         -- Create a frame counter based offset that only runs once
         if delaytilframefirstrun == true then
           delaytilframestart = delaytilframe - emu.framecount()
           delaytilframefirstrun = false
         end
-        if delaytilframestart >= 0 then
-          t1start = 256 - t1 + delaytilframestart + t1cyclecounter
+        if delaytilframestart >= 1 then
+          t1start = 256 - t1 + delaytilframestart + totalt1cycles
         else
-          t1start = 256 - t1 + t1cyclecounter
+          t1start = 256 - t1 + totalt1cycles
         end
       else
         emu.frameadvance()
@@ -678,80 +694,8 @@ while mainloop == true do
         mainloop = false
       end
       if t1start ~= 0 then nopress(t1start) end
-      if totalt1cycles == 0 then
-        framestartforcycle = emu.framecount()
-      else
-        framestartforcycle = round(emu.framecount() / totalt1cycles)
-      end
-      realt1atstart = t1
-      realt2atstart = t2
-      pressalt(A, 1252, 1)
-      saveinitialcardset()
-      pressalt(A, 325, 1)
-      findiC7()
-      logskiplogo = '_'
-      -- Deal with the fact that lua can't print booleans
-      if skiplogo == true then logskiplogo = 'skip' end
-      if skiplogo == false then logskiplogo = 'wait' end
-      -- Build the text for our log
-      logtext = realt1atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. setsex .. ',' .. logskiplogo
-      writetolog(logtext, leadername)
-      -- Update counters
-      t1cyclecounter = t1cyclecounter + 1
-      totalt1cycles = totalt1cycles + 1
-      t2cyclecounter = rounddown(totalt1cycles / 256)
-      nopress(delayaftert1loop)
-      resetconsole(1)
-      -- Conditions to end the loop
-      if runfor_t1cycle == true and t1cyclecounter == 256 then
-        mainloop = false
-      elseif runfor_t1cycle == false and t1cyclecounter == 256 then
-        t1cyclecounter = t1cyclecounter - 256
-      elseif runfor_t2cycles ~= false and t2cyclecounter == runfor_t2cycles then
-        mainloop = false
-      end
-    -- Enter name if skipping logo
-    elseif t1 == 2 and t2 == 2 and skiplogo == true then
-      nopress(27)
-      writename(letter1, letter2, letter3, letter4, letter5, letter6, letter7, letter8)
-      pressalt(A, 50, 1)
-      nopress(19)
-      sex(setsex)
-      -- Calculate what our starting frame should be based on settings
-      if delaytilt1frame == false and delaytilframe == false and delaytilt2frame == false then
-        t1start = 256 - t1 + t1cyclecounter
-      elseif delaytilt1frame >= 0 and delaytilframe == false and delaytilt2frame == false then
-        t1start = 256 - t1 + t1cyclecounter
-      elseif delaytilt1frame == false and delaytilframe == false and delaytilt2frame >= 1 then
-        delaytilt2frames = 256 * delaytilt2frame
-        delaytilt2frames = delaytilt2frames - 768
-        t1start = 256 - t1 + delaytilt2frames + t1cyclecounter
-      elseif delaytilt2frame >= 1 and delaytilframe == false and delaytilt1frame >= 0 then
-        delaytilt2frames = 256 * delaytilt2frame
-        delaytilt2frames = delaytilt2frames - 768
-        t1start = 256 - t1 + delaytilt2frames + t1cyclecounter
-      elseif delaytilt1frame == false and delaytilframe >= 0 and delaytilt2frame == false then
-        -- Create a frame counter based offset that only runs once
-        if delaytilframefirstrun == true then
-          delaytilframestart = delaytilframe - emu.framecount()
-          delaytilframefirstrun = false
-        end
-        if delaytilframestart >= 0 then
-          t1start = 256 - t1 + delaytilframestart + t1cyclecounter
-        else
-          t1start = 256 - t1 + t1cyclecounter
-        end
-      else
-        emu.frameadvance()
-        gui.text(250, 250, 'ERROR - Invalid combination of delays set.')
-        mainloop = false
-      end
-      if t1start ~= 0 then nopress(t1start) end
-      if totalt1cycles == 0 then
-        framestartforcycle = emu.framecount()
-      else
-        framestartforcycle = round(emu.framecount() / totalt1cycles)
-      end
+      endframecount = emu.framecount()
+      framestartforcycle = (endframecount - startframecount) + 1110
       realt1atstart = t1
       realt2atstart = t2
       pressalt(A, 1252, 1)
@@ -768,17 +712,75 @@ while mainloop == true do
       -- Update counters
       t1cyclecounter = t1cyclecounter + 1
       totalt1cycles = totalt1cycles + 1
-      t2cyclecounter = rounddown(totalt1cycles / 256) + t2startoffset
+      t2cyclecounter = rounddown(totalt1cycles / 256)
       nopress(delayaftert1loop)
       resetconsole(1)
       -- Conditions to end the loop
-      if runfor_t1cycle == true and t1cyclecounter == 256 then
-        mainloop = false
-      elseif runfor_t1cycle == false and t1cyclecounter == 256 then
-        t1cyclecounter = t1cyclecounter - 256
-      elseif runfor_t2cycles ~= false and t2cyclecounter == runfor_t2cycles then
+      if runfor_t1cycle == true and t1cyclecounter == 256 then mainloop = false end
+      if runfor_t1cycle == false and t1cyclecounter == 256 then t1cyclecounter = t1cyclecounter - 256 end
+      if runfor_t2cycles ~= false and t2cyclecounter == runfor_t2cycles then mainloop = false end
+    -- Enter name if skipping logo
+    elseif t1 == 2 and t2 == 2 and skiplogo == true then
+      nopress(27)
+      writename(letter1, letter2, letter3, letter4, letter5, letter6, letter7, letter8)
+      pressalt(A, 50, 1)
+      nopress(19)
+      sex(setsex)
+      -- Calculate what our starting frame should be based on settings
+      if delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame == 0 then
+        t1start = 256 - t1 + totalt1cycles
+      elseif delaytilt1frame >= 1 and delaytilframe == 0 and delaytilt2frame == 0 then
+        t1start = 256 - t1 + totalt1cycles
+      elseif delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame >= 1 then
+        --delaytilt2frames = 256 * delaytilt2frame
+        delaytilt2frames = 0
+        t1start = 256 - t1 + delaytilt2frames + totalt1cycles
+      elseif delaytilt2frame >= 1 and delaytilframe == 0 and delaytilt1frame >= 1 then
+        --delaytilt2frames = 256 * delaytilt2frame
+        delaytilt2frames = 0
+        t1start = 256 - t1 + delaytilt2frames + totalt1cycles
+      elseif delaytilt1frame == 0 and delaytilframe >= 1 and delaytilt2frame == 0 then
+        -- Create a frame counter based offset that only runs once
+        if delaytilframefirstrun == true then
+          delaytilframestart = delaytilframe - emu.framecount()
+          delaytilframefirstrun = false
+        end
+        if delaytilframestart >= 1 then
+          t1start = 256 - t1 + delaytilframestart + totalt1cycles
+        else
+          t1start = 256 - t1 + totalt1cycles
+        end
+      else
+        emu.frameadvance()
+        gui.text(250, 250, 'ERROR - Invalid combination of delays set.')
         mainloop = false
       end
+      if t1start ~= 0 then nopress(t1start) end
+      endframecount = emu.framecount()
+      framestartforcycle = (endframecount - startframecount) + 1110
+      realt1atstart = t1
+      realt2atstart = t2
+      pressalt(A, 1252, 1)
+      saveinitialcardset()
+      pressalt(A, 325, 1)
+      findiC7()
+      logskiplogo = '_'
+      -- Deal with the fact that lua can't print booleans
+      if skiplogo == true then logskiplogo = 'skip' end
+      if skiplogo == false then logskiplogo = 'wait' end
+      -- Build the text for our log
+      logtext = realt1atstart .. ',' .. realt2atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. setsex .. ',' .. logskiplogo
+      writetolog(logtext, leadername)
+      -- Update counters
+      t1cyclecounter = t1cyclecounter + 1
+      totalt1cycles = totalt1cycles + 1
+      t2cyclecounter = rounddown(totalt1cycles / 256)
+      nopress(delayaftert1loop)
+      resetconsole(1)
+      -- Conditions to end the loop
+      if runfor_t1cycle == true and t1cyclecounter == 256 then mainloop = false end
+      if runfor_t1cycle == false and t1cyclecounter == 256 then t1cyclecounter = t1cyclecounter - 256 end
+      if runfor_t2cycles ~= false and t2cyclecounter == runfor_t2cycles then mainloop = false end
     end
   emu.frameadvance()
 end
