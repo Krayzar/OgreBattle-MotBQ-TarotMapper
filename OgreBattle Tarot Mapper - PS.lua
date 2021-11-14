@@ -3,7 +3,7 @@
   -- Skip Quest logo - can be set to true or false
   skiplogo = true
   -- Test options include Male, Female
-  setsex = 'Male'
+  setsex = 'Female'
   -- Name to test - END to finish imput, nil for all letters after END
   letter1 = '!'
   letter2 = 'END'
@@ -44,9 +44,9 @@
 -- Setting up and figuring out some variables
 
   -- Main Timer count
-  t1 = memory.readbyte(0x51)
+  t1 = memory.readbyte(0x13C8FC)
   -- Secondary timer count
-  t2 = memory.readbyte(0x52)
+  t2 = memory.readbyte(0x13C8FD)
   -- Cycle counters for main count loops
   t1cyclecounter = 0
   totalt1cycles = 0
@@ -157,8 +157,8 @@
     elseif hex == 0x21 then return '!'
     elseif hex == 0x3F then return '?'
     elseif hex == 0x26 then return '&'
-    elseif hex == 0x2B then return '+'
-    elseif hex == 0x25 then return '%'
+    elseif hex == 0x2B then return '`'
+    elseif hex == 0x25 then return '\''
     elseif hex == 0x2C then return ','
     elseif hex == 0x2E then return '.'
     elseif hex == 0x3A then return ':'
@@ -196,12 +196,14 @@
   end
 
   -- Button variables - doesn't handle pressing multiples, FYI
-  A = {A=true}
-  B = {B=true}
-  X = {X=true}
-  Y = {Y=true}
-  L = {L=true}
-  R = {R=true}
+  Circle = {Circle=true}
+  Cross = {Cross=true}
+  Square = {Square=true}
+  Triangle = {Triangle=true}
+  L1 = {L1=true}
+  R1 = {R1=true}
+  L2 = {L1=true}
+  R2 = {R1=true}
   Up = {Up=true}
   Down = {Down=true}
   Left = {Left=true}
@@ -211,42 +213,41 @@
   Reset = {Reset=true}
 
   -- Leader Name
-  leadername = hextotext(memory.readbyte(0x7A4)) .. hextotext(memory.readbyte(0x7A5)) .. hextotext(memory.readbyte(0x7A6)) .. hextotext(memory.readbyte(0x7A7)) .. hextotext(memory.readbyte(0x7A8)) .. hextotext(memory.readbyte(0x7A9)) .. hextotext(memory.readbyte(0x7AA)) .. hextotext(memory.readbyte(0x7AB))
+  leadername = hextotext(memory.readbyte(0x1C6C14)) .. hextotext(memory.readbyte(0x1C6C15)) .. hextotext(memory.readbyte(0x1C6C16)) .. hextotext(memory.readbyte(0x1C6C17)) .. hextotext(memory.readbyte(0x1C6C18)) .. hextotext(memory.readbyte(0x1C6C19)) .. hextotext(memory.readbyte(0x1C6C1A)) .. hextotext(memory.readbyte(0x1C6C1B))
 
   -- Cards
-  c1 = hextotarot(memory.readbyte(0xDBE))
-  c2 = hextotarot(memory.readbyte(0xDBF))
-  c3 = hextotarot(memory.readbyte(0xDC0))
-  c4 = hextotarot(memory.readbyte(0xDC1))
-  c5 = hextotarot(memory.readbyte(0xDC2))
-  c6 = hextotarot(memory.readbyte(0xDC3))
-  c7 = hextotarot(memory.readbyte(0xDC4))
+  c1 = hextotarot(memory.readbyte(0x1C6B84))
+  c2 = hextotarot(memory.readbyte(0x1C6B85))
+  c3 = hextotarot(memory.readbyte(0x1C6B86))
+  c4 = hextotarot(memory.readbyte(0x1C6B87))
+  c5 = hextotarot(memory.readbyte(0x1C6B88))
+  c6 = hextotarot(memory.readbyte(0x1C6B89))
+  c7 = hextotarot(memory.readbyte(0x1C6B8A))
 
   --Set up and print stats
   function stats()
     -- Cards
-    c1 = hextotarot(memory.readbyte(0xDBE))
-    c2 = hextotarot(memory.readbyte(0xDBF))
-    c3 = hextotarot(memory.readbyte(0xDC0))
-    c4 = hextotarot(memory.readbyte(0xDC1))
-    c5 = hextotarot(memory.readbyte(0xDC2))
-    c6 = hextotarot(memory.readbyte(0xDC3))
-    c7 = hextotarot(memory.readbyte(0xDC4))
+    c1 = hextotarot(memory.readbyte(0x1C6B84))
+    c2 = hextotarot(memory.readbyte(0x1C6B85))
+    c3 = hextotarot(memory.readbyte(0x1C6B86))
+    c4 = hextotarot(memory.readbyte(0x1C6B87))
+    c5 = hextotarot(memory.readbyte(0x1C6B88))
+    c6 = hextotarot(memory.readbyte(0x1C6B89))
+    c7 = hextotarot(memory.readbyte(0x1C6B8A))
     -- Cards raw hex
-    c1hex = memory.readbyte(0xDBE)
-    c2hex = memory.readbyte(0xDBF)
-    c3hex = memory.readbyte(0xDC0)
-    c4hex = memory.readbyte(0xDC1)
-    c5hex = memory.readbyte(0xDC2)
-    c6hex = memory.readbyte(0xDC3)
-    c7hex = memory.readbyte(0xDC4)
+    c1hex = memory.readbyte(0x1C6B84)
+    c2hex = memory.readbyte(0x1C6B85)
+    c3hex = memory.readbyte(0x1C6B86)
+    c4hex = memory.readbyte(0x1C6B87)
+    c5hex = memory.readbyte(0x1C6B88)
+    c6hex = memory.readbyte(0x1C6B89)
+    c7hex = memory.readbyte(0x1C6B8A)
     -- Main Timer count
-    t1 = memory.readbyte(0x51)
+    t1 = memory.readbyte(0x13C8FC)
     -- Secondary timer count
-    t2 = memory.readbyte(0x52)
+    t2 = memory.readbyte(0x13C8FD)
     -- Leader Name
-    leadername = hextotext(memory.readbyte(0x7A4)) .. hextotext(memory.readbyte(0x7A5)) .. hextotext(memory.readbyte(0x7A6)) .. hextotext(memory.readbyte(0x7A7)) .. hextotext(memory.readbyte(0x7A8)) .. hextotext(memory.readbyte(0x7A9)) .. hextotext(memory.readbyte(0x7AA)) .. hextotext(memory.readbyte(0x7AB))
-    if displayname == true then gui.text(85, 0, 'N: ' .. leadername) end
+    leadername = hextotext(memory.readbyte(0x1C6C14)) .. hextotext(memory.readbyte(0x1C6C15)) .. hextotext(memory.readbyte(0x1C6C16)) .. hextotext(memory.readbyte(0x1C6C17)) .. hextotext(memory.readbyte(0x1C6C18)) .. hextotext(memory.readbyte(0x1C6C19)) .. hextotext(memory.readbyte(0x1C6C1A)) .. hextotext(memory.readbyte(0x1C6C1B))
     if displayframecount == true then gui.text(0, 30, emu.framecount()) end
     if displaytimers == true then
       gui.text(0, 45, 'T1: ' .. t1)
@@ -334,267 +335,432 @@
   -- Letter setter function - it was a pain to write, but it works
   function setletter(letter)
     if letter == '0' then
-      press(A, 1, 1)
+      press(Cross, 1, 1)
+      nopress(1)
     elseif letter == '1' then
       pressalt(Right, 1, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 1, 1)
     elseif letter == '2' then
       pressalt(Right, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 2, 1)
     elseif letter == '3' then
       pressalt(Right, 3, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 3, 1)
     elseif letter == '4' then
       pressalt(Right, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 4, 1)
     elseif letter == '5' then
       pressalt(Right, 5, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 5, 1)
     elseif letter == '6' then
       pressalt(Left, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 4, 1)
     elseif letter == '7' then
       pressalt(Left, 3, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 3, 1)
     elseif letter == '8' then
       pressalt(Left, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 2, 1)
     elseif letter == '9' then
       pressalt(Left, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 2, 1)
     elseif letter == 'A' then
       pressalt(Down, 1, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Up, 1, 1)
     elseif letter == 'B' then
       pressalt(Down, 1, 1)
+      nopress(1)
       pressalt(Right, 1, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 1, 1)
+      nopress(1)
       pressalt(Up, 1, 1)
     elseif letter == 'C' then
       pressalt(Down, 1, 1)
+      nopress(1)
       pressalt(Right, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 2, 1)
+      nopress(1)
       pressalt(Up, 1, 1)
     elseif letter == 'D' then
       pressalt(Down, 1, 1)
+      nopress(1)
       pressalt(Right, 3, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 3, 1)
+      nopress(1)
       pressalt(Up, 1, 1)
     elseif letter == 'E' then
       pressalt(Down, 1, 1)
+      nopress(1)
       pressalt(Right, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 4, 1)
+      nopress(1)
       pressalt(Up, 1, 1)
     elseif letter == 'F' then
       pressalt(Down, 1, 1)
+      nopress(1)
       pressalt(Right, 5, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 5, 1)
+      nopress(1)
       pressalt(Up, 1, 1)
     elseif letter == 'G' then
       pressalt(Down, 1, 1)
+      nopress(1)
       pressalt(Left, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 4, 1)
+      nopress(1)
       pressalt(Up, 1, 1)
     elseif letter == 'H' then
       pressalt(Down, 1, 1)
+      nopress(1)
       pressalt(Left, 3, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 3, 1)
+      nopress(1)
       pressalt(Up, 1, 1)
     elseif letter == 'I' then
       pressalt(Down, 1, 1)
+      nopress(1)
       pressalt(Left, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 2, 1)
+      nopress(1)
       pressalt(Up, 1, 1)
     elseif letter == 'J' then
       pressalt(Down, 1, 1)
+      nopress(1)
       pressalt(Left, 1, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 1, 1)
+      nopress(1)
       pressalt(Up, 1, 1)
     elseif letter == 'K' then
       pressalt(Down, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Up, 2, 1)
     elseif letter == 'L' then
       pressalt(Down, 2, 1)
+      nopress(1)
       pressalt(Right, 1, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 1, 1)
+      nopress(1)
       pressalt(Up, 2, 1)
     elseif letter == 'M' then
       pressalt(Down, 2, 1)
+      nopress(1)
       pressalt(Right, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 2, 1)
+      nopress(1)
       pressalt(Up, 2, 1)
     elseif letter == 'N' then
       pressalt(Down, 2, 1)
+      nopress(1)
       pressalt(Right, 3, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 3, 1)
+      nopress(1)
       pressalt(Up, 2, 1)
     elseif letter == 'O' then
       pressalt(Down, 2, 1)
+      nopress(1)
       pressalt(Right, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 4, 1)
+      nopress(1)
       pressalt(Up, 2, 1)
     elseif letter == 'P' then
       pressalt(Down, 2, 1)
+      nopress(1)
       pressalt(Right, 5, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 5, 1)
+      nopress(1)
       pressalt(Up, 2, 1)
     elseif letter == 'Q' then
       pressalt(Down, 2, 1)
+      nopress(1)
       pressalt(Left, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 4, 1)
+      nopress(1)
       pressalt(Up, 2, 1)
     elseif letter == 'R' then
       pressalt(Down, 2, 1)
+      nopress(1)
       pressalt(Left, 3, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 3, 1)
+      nopress(1)
       pressalt(Up, 2, 1)
     elseif letter == 'S' then
       pressalt(Down, 2, 1)
+      nopress(1)
       pressalt(Left, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 2, 1)
+      nopress(1)
       pressalt(Up, 2, 1)
     elseif letter == 'T' then
       pressalt(Down, 2, 1)
+      nopress(1)
       pressalt(Left, 1, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 1, 1)
+      nopress(1)
       pressalt(Up, 2, 1)
     elseif letter == 'U' then
       pressalt(Down, 3, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Up, 3, 1)
     elseif letter == 'V' then
       pressalt(Down, 3, 1)
+      nopress(1)
       pressalt(Right, 1, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 1, 1)
+      nopress(1)
       pressalt(Up, 3, 1)
     elseif letter == 'W' then
       pressalt(Down, 3, 1)
+      nopress(1)
       pressalt(Right, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 2, 1)
+      nopress(1)
       pressalt(Up, 3, 1)
     elseif letter == 'X' then
       pressalt(Down, 3, 1)
+      nopress(1)
       pressalt(Right, 3, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 3, 1)
+      nopress(1)
       pressalt(Up, 3, 1)
     elseif letter == 'Y' then
       pressalt(Down, 3, 1)
+      nopress(1)
       pressalt(Right, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 4, 1)
+      nopress(1)
       pressalt(Up, 3, 1)
     elseif letter == 'Z' then
       pressalt(Down, 3, 1)
+      nopress(1)
       pressalt(Right, 5, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 5, 1)
+      nopress(1)
       pressalt(Up, 3, 1)
     elseif letter == '/' then
       pressalt(Down, 3, 1)
+      nopress(1)
       pressalt(Left, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 4, 1)
+      nopress(1)
       pressalt(Up, 3, 1)
     elseif letter == '-' then
       pressalt(Down, 3, 1)
+      nopress(1)
       pressalt(Left, 3, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 3, 1)
+      nopress(1)
       pressalt(Up, 3, 1)
     elseif letter == '=' then
       pressalt(Down, 3, 1)
+      nopress(1)
       pressalt(Left, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 2, 1)
+      nopress(1)
       pressalt(Up, 3, 1)
     elseif letter == '!' then
       pressalt(Down, 3, 1)
+      nopress(1)
       pressalt(Left, 1, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 1, 1)
+      nopress(1)
       pressalt(Up, 3, 1)
     elseif letter == '?' then
       pressalt(Down, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Up, 4, 1)
     elseif letter == '&' then
       pressalt(Down, 4, 1)
+      nopress(1)
       pressalt(Right, 1, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 1, 1)
+      nopress(1)
       pressalt(Up, 4, 1)
-    elseif letter == '+' then
+    elseif letter == '`' then
       pressalt(Down, 4, 1)
+      nopress(1)
       pressalt(Right, 2, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 2, 1)
+      nopress(1)
       pressalt(Up, 4, 1)
-    elseif letter == '%' then
+    elseif letter == '\'' then
       pressalt(Down, 4, 1)
+      nopress(1)
       pressalt(Right, 3, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 3, 1)
+      nopress(1)
       pressalt(Up, 4, 1)
     elseif letter == ',' then
       pressalt(Down, 4, 1)
+      nopress(1)
       pressalt(Right, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 4, 1)
+      nopress(1)
       pressalt(Up, 4, 1)
     elseif letter == '.' then
       pressalt(Down, 4, 1)
+      nopress(1)
       pressalt(Right, 5, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Left, 5, 1)
+      nopress(1)
       pressalt(Up, 4, 1)
     elseif letter == ':' then
       pressalt(Down, 4, 1)
+      nopress(1)
       pressalt(Left, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 4, 1)
+      nopress(1)
       pressalt(Up, 4, 1)
     elseif letter == ' ' then
       pressalt(Down, 4, 1)
+      nopress(1)
       pressalt(Left, 4, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
+      nopress(1)
       pressalt(Right, 4, 1)
+      nopress(1)
       pressalt(Up, 4, 1)
     elseif letter == 'END' then
       pressalt(Down, 4, 1)
+      nopress(1)
       pressalt(Left, 1, 1)
-      pressalt(A, 1, 1)
+      nopress(1)
+      pressalt(Cross, 1, 1)
     else
     end
   end
@@ -646,146 +812,155 @@
     ic7 = hextotarot(ic7hex)
   end
 
--- Main loop
-mainloop = true
-while mainloop == true do
-    startframecount = emu.framecount()
-    setinitialcardvalues()
-    stats()
-    -- Skip logo
-    if t1 == 1 and t2 < 2 and skiplogo == true then pressalt(A, 190, 1) end
-    -- Wait for logo if not skipping
-    if t1 == 156 and t2 == 1 and skiplogo == false then pressalt(A, 7, 1) end
-    -- Get past the Warren talk if not skipping logo
-    if t1 == 244 and t2 == 1 and skiplogo == false then pressalt(A, 90, 1) end
-    -- Enter name if not skipping logo
-    if t1 == 233 and t2 == 2 and skiplogo == false then
-      nopress(27)
-      writename(letter1, letter2, letter3, letter4, letter5, letter6, letter7, letter8)
-      pressalt(A, 50, 1)
-      nopress(19)
-      sex(setsex)
-      -- Calculate what our starting frame should be based on settings
-      if delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame == 0 then
-        t1start = 256 - t1 + totalt1cycles
-      elseif delaytilt1frame >= 1 and delaytilframe == 0 and delaytilt2frame == 0 then
-        t1start = 256 - t1 + totalt1cycles
-      elseif delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame >= 1 then
-        --delaytilt2frames = 256 * delaytilt2frame
-        delaytilt2frames = 0
-        t1start = 256 - t1 + delaytilt2frames + totalt1cycles
-      elseif delaytilt2frame >= 1 and delaytilframe == 0 and delaytilt1frame >= 1 then
-        --delaytilt2frames = 256 * delaytilt2frame
-        delaytilt2frames = 0
-        t1start = 256 - t1 + delaytilt2frames + totalt1cycles
-      elseif delaytilt1frame == 0 and delaytilframe >= 1 and delaytilt2frame == 0 then
-        -- Create a frame counter based offset that only runs once
-        if delaytilframefirstrun == true then
-          delaytilframestart = delaytilframe - emu.framecount()
-          delaytilframefirstrun = false
-        end
-        if delaytilframestart >= 1 then
-          t1start = 256 - t1 + delaytilframestart + totalt1cycles
-        else
-          t1start = 256 - t1 + totalt1cycles
-        end
-      else
-        emu.frameadvance()
-        gui.text(250, 250, 'ERROR - Invalid combination of delays set.')
-        mainloop = false
+  -- Main loop
+  mainloop = true
+  while mainloop == true do
+      startframecount = emu.framecount()
+      setinitialcardvalues()
+      stats()
+      -- Skip logo
+      if skiplogo == true and t1 == 0 and t2 == 0 then
+        pressalt(Start, 1, 1)
+        stats()
       end
-      if t1start ~= 0 then nopress(t1start) end
-      endframecount = emu.framecount()
-      framestartforcycle = (endframecount - startframecount) + 1110
-      realt1atstart = t1
-      realt2atstart = t2
-      pressalt(A, 1252, 1)
-      saveinitialcardset()
-      pressalt(A, 325, 1)
-      findiC7()
-      logskiplogo = '_'
-      -- Deal with the fact that lua can't print booleans
-      if skiplogo == true then logskiplogo = 'skip' end
-      if skiplogo == false then logskiplogo = 'wait' end
-      frametimeforcycle = framestartforcycle / 60
-      -- Build the text for our log
-      logtext = realt1atstart .. ',' .. realt2atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. setsex .. ',' .. logskiplogo .. ',' .. frametimeforcycle
-      writetolog(logtext, leadername .. '-' .. logskiplogo .. '-' .. setsex .. '-SNES')
-      console.log(logtext)
-      -- Update counters
-      t1cyclecounter = t1cyclecounter + 1
-      totalt1cycles = totalt1cycles + 1
-      t2cyclecounter = rounddown(totalt1cycles / 256)
-      nopress(delayaftert1loop)
-      resetconsole(1)
-      -- Conditions to end the loop
-      if runfor_t1cycle == true and t1cyclecounter == 256 then mainloop = false end
-      if runfor_t1cycle == false and t1cyclecounter == 256 then t1cyclecounter = t1cyclecounter - 256 end
-      if runfor_t2cycles ~= false and t2cyclecounter == runfor_t2cycles then mainloop = false end
-    -- Enter name if skipping logo
-    elseif t1 == 2 and t2 == 2 and skiplogo == true then
-      nopress(27)
-      writename(letter1, letter2, letter3, letter4, letter5, letter6, letter7, letter8)
-      pressalt(A, 50, 1)
-      nopress(19)
-      sex(setsex)
-      -- Calculate what our starting frame should be based on settings
-      if delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame == 0 then
-        t1start = 256 - t1 + totalt1cycles
-      elseif delaytilt1frame >= 1 and delaytilframe == 0 and delaytilt2frame == 0 then
-        t1start = 256 - t1 + totalt1cycles
-      elseif delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame >= 1 then
-        --delaytilt2frames = 256 * delaytilt2frame
-        delaytilt2frames = 0
-        t1start = 256 - t1 + delaytilt2frames + totalt1cycles
-      elseif delaytilt2frame >= 1 and delaytilframe == 0 and delaytilt1frame >= 1 then
-        --delaytilt2frames = 256 * delaytilt2frame
-        delaytilt2frames = 0
-        t1start = 256 - t1 + delaytilt2frames + totalt1cycles
-      elseif delaytilt1frame == 0 and delaytilframe >= 1 and delaytilt2frame == 0 then
-        -- Create a frame counter based offset that only runs once
-        if delaytilframefirstrun == true then
-          delaytilframestart = delaytilframe - emu.framecount()
-          delaytilframefirstrun = false
-        end
-        if delaytilframestart >= 1 then
-          t1start = 256 - t1 + delaytilframestart + totalt1cycles
-        else
+      if t1 == 1 and t2 < 2 and skiplogo == true then pressalt(Cross, 420, 1) end
+      -- Wait for logo if not skipping
+      if t1 == 156 and t2 == 1 and skiplogo == false then pressalt(Cross, 7, 1) end
+      -- Get past the Warren talk if not skipping logo
+      if t1 == 244 and t2 == 1 and skiplogo == false then pressalt(Cross, 206, 1) end
+      -- Enter name if not skipping logo
+      if t1 == 103 and t2 == 4 and skiplogo == false then
+        nopress(27)
+        writename(letter1, letter2, letter3, letter4, letter5, letter6, letter7, letter8)
+        pressalt(Cross, 9, 1)
+        nopress(19)
+        sex(setsex)
+        -- Calculate what our starting frame should be based on settings
+        if delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame == 0 then
           t1start = 256 - t1 + totalt1cycles
+        elseif delaytilt1frame >= 1 and delaytilframe == 0 and delaytilt2frame == 0 then
+          t1start = 256 - t1 + totalt1cycles
+        elseif delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame >= 1 then
+          --delaytilt2frames = 256 * delaytilt2frame
+          delaytilt2frames = 0
+          t1start = 256 - t1 + delaytilt2frames + totalt1cycles
+        elseif delaytilt2frame >= 1 and delaytilframe == 0 and delaytilt1frame >= 1 then
+          --delaytilt2frames = 256 * delaytilt2frame
+          delaytilt2frames = 0
+          t1start = 256 - t1 + delaytilt2frames + totalt1cycles
+        elseif delaytilt1frame == 0 and delaytilframe >= 1 and delaytilt2frame == 0 then
+          -- Create a frame counter based offset that only runs once
+          if delaytilframefirstrun == true then
+            delaytilframestart = delaytilframe - emu.framecount()
+            delaytilframefirstrun = false
+          end
+          if delaytilframestart >= 1 then
+            t1start = 256 - t1 + delaytilframestart + totalt1cycles
+          else
+            t1start = 256 - t1 + totalt1cycles
+          end
+        else
+          emu.frameadvance()
+          gui.text(250, 250, 'ERROR - Invalid combination of delays set.')
+          mainloop = false
         end
-      else
-        emu.frameadvance()
-        gui.text(250, 250, 'ERROR - Invalid combination of delays set.')
-        mainloop = false
+        if t1start ~= 0 then nopress(t1start) end
+        endframecount = emu.framecount()
+        framestartforcycle = (endframecount - startframecount) + 3651
+        realt1atstart = t1
+        realt2atstart = t2
+        pressalt(Cross, 746, 1)
+        saveinitialcardset()
+        pressalt(Cross, 225, 1)
+        findiC7()
+        nopress(500)
+        pressalt(Cross, 125, 1)
+        logskiplogo = '_'
+        -- Deal with the fact that lua can't print booleans
+        if skiplogo == true then logskiplogo = 'skip' end
+        if skiplogo == false then logskiplogo = 'wait' end
+        frametimeforcycle = framestartforcycle / 60
+        -- Build the text for our log
+        logtext = realt1atstart .. ',' .. realt2atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. setsex .. ',' .. logskiplogo .. ',' .. frametimeforcycle
+        writetolog(logtext, leadername .. '-' .. logskiplogo .. '-' .. setsex)
+        console.log(logtext)
+        -- Update counters
+        t1cyclecounter = t1cyclecounter + 1
+        totalt1cycles = totalt1cycles + 1
+        t2cyclecounter = rounddown(totalt1cycles / 256)
+        nopress(delayaftert1loop)
+        resetconsole(1)
+        -- Conditions to end the loop
+        if runfor_t1cycle == true and t1cyclecounter == 256 then mainloop = false end
+        if runfor_t1cycle == false and t1cyclecounter == 256 then t1cyclecounter = t1cyclecounter - 256 end
+        if runfor_t2cycles ~= false and t2cyclecounter == runfor_t2cycles then mainloop = false end
+      -- Enter name if skipping logo
+      elseif t1 == 152 and t2 == 4 and skiplogo == true then
+        nopress(27)
+        writename(letter1, letter2, letter3, letter4, letter5, letter6, letter7, letter8)
+        pressalt(Cross, 9, 1)
+        nopress(19)
+        sex(setsex)
+        -- Calculate what our starting frame should be based on settings
+        if delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame == 0 then
+          t1start = 256 - t1 + totalt1cycles
+        elseif delaytilt1frame >= 1 and delaytilframe == 0 and delaytilt2frame == 0 then
+          t1start = 256 - t1 + totalt1cycles
+        elseif delaytilt1frame == 0 and delaytilframe == 0 and delaytilt2frame >= 1 then
+          --delaytilt2frames = 256 * delaytilt2frame
+          delaytilt2frames = 0
+          t1start = 256 - t1 + delaytilt2frames + totalt1cycles
+        elseif delaytilt2frame >= 1 and delaytilframe == 0 and delaytilt1frame >= 1 then
+          --delaytilt2frames = 256 * delaytilt2frame
+          delaytilt2frames = 0
+          t1start = 256 - t1 + delaytilt2frames + totalt1cycles
+        elseif delaytilt1frame == 0 and delaytilframe >= 1 and delaytilt2frame == 0 then
+          -- Create a frame counter based offset that only runs once
+          if delaytilframefirstrun == true then
+            delaytilframestart = delaytilframe - emu.framecount()
+            delaytilframefirstrun = false
+          end
+          if delaytilframestart >= 1 then
+            t1start = 256 - t1 + delaytilframestart + totalt1cycles
+          else
+            t1start = 256 - t1 + totalt1cycles
+          end
+        else
+          emu.frameadvance()
+          gui.text(250, 250, 'ERROR - Invalid combination of delays set.')
+          mainloop = false
+        end
+        if t1start ~= 0 then nopress(t1start) end
+        endframecount = emu.framecount()
+        framestartforcycle = (endframecount - startframecount) + 2953
+        console.log(emu.framecount())
+        realt1atstart = t1
+        realt2atstart = t2
+        pressalt(Cross, 746, 1)
+        saveinitialcardset()
+        pressalt(Cross, 225, 1)
+        findiC7()
+        nopress(500)
+        pressalt(Cross, 125, 1)
+        logskiplogo = '_'
+        -- Deal with the fact that lua can't print booleans
+        if skiplogo == true then logskiplogo = 'skip' end
+        if skiplogo == false then logskiplogo = 'wait' end
+        frametimeforcycle = framestartforcycle / 60
+        -- Build the text for our log
+        logtext = realt1atstart .. ',' .. realt2atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. setsex .. ',' .. logskiplogo .. ',' .. frametimeforcycle
+        writetolog(logtext, leadername .. '-' .. logskiplogo .. '-' .. setsex .. '-PlayStation')
+        console.log(logtext)
+        -- Update counters
+        t1cyclecounter = t1cyclecounter + 1
+        totalt1cycles = totalt1cycles + 1
+        t2cyclecounter = rounddown(totalt1cycles / 256)
+        nopress(delayaftert1loop)
+        resetconsole(1)
+        -- Conditions to end the loop
+        if runfor_t1cycle == true and t1cyclecounter == 256 then mainloop = false end
+        if runfor_t1cycle == false and t1cyclecounter == 256 then t1cyclecounter = t1cyclecounter - 256 end
+        if runfor_t2cycles ~= false and t2cyclecounter == runfor_t2cycles then mainloop = false end
       end
-      if t1start ~= 0 then nopress(t1start) end
-      endframecount = emu.framecount()
-      framestartforcycle = (endframecount - startframecount) + 1110
-      realt1atstart = t1
-      realt2atstart = t2
-      pressalt(A, 1252, 1)
-      saveinitialcardset()
-      pressalt(A, 325, 1)
-      findiC7()
-      logskiplogo = '_'
-      -- Deal with the fact that lua can't print booleans
-      if skiplogo == true then logskiplogo = 'skip' end
-      if skiplogo == false then logskiplogo = 'wait' end
-      frametimeforcycle = framestartforcycle / 60
-      -- Build the text for our log
-      logtext = realt1atstart .. ',' .. realt2atstart .. ',' .. framestartforcycle .. ',' .. ic1 .. ',' .. ic2 .. ',' .. ic3  .. ',' .. ic4  .. ',' .. ic5  .. ',' .. ic6  .. ',' .. ic7  .. ',' .. c1 .. ',' .. c2 .. ',' .. c3 .. ',' .. c4  .. ',' .. c5  .. ',' .. c6  .. ',' .. c7  .. ',' .. leadername .. ',' .. setsex .. ',' .. logskiplogo .. ',' .. frametimeforcycle
-      writetolog(logtext, leadername .. '-' .. logskiplogo .. '-' .. setsex .. '-SNES')
-      console.log(logtext)
-      -- Update counters
-      t1cyclecounter = t1cyclecounter + 1
-      totalt1cycles = totalt1cycles + 1
-      t2cyclecounter = rounddown(totalt1cycles / 256)
-      nopress(delayaftert1loop)
-      resetconsole(1)
-      -- Conditions to end the loop
-      if runfor_t1cycle == true and t1cyclecounter == 256 then mainloop = false end
-      if runfor_t1cycle == false and t1cyclecounter == 256 then t1cyclecounter = t1cyclecounter - 256 end
-      if runfor_t2cycles ~= false and t2cyclecounter == runfor_t2cycles then mainloop = false end
-    end
-  emu.frameadvance()
+      emu.frameadvance()
 end
