@@ -1,7 +1,7 @@
 -- SCRIPT CONFIG START --
 
   -- Skip Quest logo - can be set to true or false
-  skiplogo = true
+  skiplogo = false
   -- Test options include Male, Female
   setsex = 'Female'
   -- Name to test - END to finish imput, nil for all letters after END
